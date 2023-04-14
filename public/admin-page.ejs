@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+<%- include('./parts/head.ejs') %>
+
+<%- include('./parts/admin-header.ejs') %>
+
+<body data-gr-c-s-loaded="true" class="">
+
+    <section id="main" class="main-wrapper">
+        <div class="container">
+            <%- include('./parts/admin-addBook.ejs') %>
+            <%- include('./parts/admin-book-list.ejs') %>
+            <%- include('./parts/admin-logout-button.ejs') %>
+        </div>
+    </section>
+
+    <%- include('./parts/footer.ejs') %>
+</body>
+</html>

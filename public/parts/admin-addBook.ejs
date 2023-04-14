@@ -1,0 +1,99 @@
+<div style="width: 700px; height: 700px; border: 2px solid #27ae60;" class="container"> 
+
+    <style>
+        .input_block{
+            width: 300px;
+            height: 70px;
+            margin: 10px;
+        }
+    </style>
+    <form id="formAddBook" enctype="multipart/form-data">
+        <center style="font-size: 16px; color: #31764e;">Добавить книгу</center>
+        <div style="height: 289px; position: relative;float: right;" class="input_block">
+
+        <div style="border: 1px solid #27ae60;margin: 3px auto; height: 230px; width: 190px;" class="input_block">
+            <img style="width: 100%; height: 100%; display: none;" src="" alt="Preview" id="img">
+        </div>
+
+        <div style="text-align: center;">
+            <label style="cursor: pointer;font-size: 12px;width: 140px;height: 21px;" class="btn-success">
+                Выбрать картинку
+                <input type="file" name="image" accept="image/*" id="inputIMG" style="width:100%; height: 100%; display: none;">
+            </label>
+        </div>
+        </div>
+
+        <div class="input_block" style="text-align: center;">
+        <label for="name">Название книги:</label><br>
+        <input type="text" id="name" name="name">
+        </div>
+
+        <div class="input_block" style="text-align: center;">
+        <label for="year">Год:</label><br>
+        <input type="text" id="year" name="year">
+        </div>
+
+        <div class="input_block" style="text-align: center;">
+        <label for="author">Автор:<br><p style="font-size: 9px;">Можно вводить несколько авторов, через запятую<br>"Автор1, Автор2"</p></label><br>
+        <input type="text" id="author" name="author">
+        </div>
+
+        <div class="input_block" style="text-align: center; padding-top: 20px;">
+        <label for="numberPages">Количество страниц:</label><br>
+        <input type="text" id="numberPages" name="numberPages">
+        </div>
+
+        <div class="input_block" style="text-align: center; width: auto; height: 300px;">
+        <label for="info">Описание книги:</label><br>
+        <textarea style="resize: none;height: 250px; width:99%; padding: 10px;" type="text" id="info" name="info"></textarea>
+        </div>
+        <input class="btn-success" type="submit" value="Добавить"></input>
+    </form>
+
+</div>
+
+<script>
+document.getElementById("formAddBook").addEventListener("submit", function(event){
+        event.preventDefault();
+        const formData = new FormData(this);
+
+        if(formData.get('name').trim() && formData.get('year').trim() && formData.get('author').trim() && formData.get('numberPages').trim() && formData.get('name').trim() && formData.get('info').trim() && formData.get('image').size != 0){
+
+            addBookREQ(formData);
+        
+        } else {
+
+            alert('Заполните все поля формы')
+
+        }
+    })
+
+    function addBookREQ(body){
+        const request = fetch("<%=url%>/admin/api/v<%=apiVersion%>/addbook",{
+            method: "POST",
+            body: body
+        })
+        .then(res => res.json())
+        .then(res => {
+            if(res.result == "ok"){
+                window.location.href = '';
+            } else if(res.error) {
+                alert(res.error);
+            }
+        })
+    }
+
+    const inputIMG = document.getElementById("inputIMG");
+    const img = document.getElementById("img");
+    inputIMG.addEventListener("change", () => {
+      const file = inputIMG.files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.readAsDataURL(file);
+        reader.addEventListener("load", () => {
+            img.style.display = "block"
+            img.src = reader.result;
+        });
+      }
+    });
+</script>

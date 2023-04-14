@@ -1,0 +1,71 @@
+<section id="main" class="main-wrapper">
+    <div class="container">
+        <div id="content" class="book_block col-xs-12 col-sm-12 col-md-12 col-lg-12">
+            <div id="id" book-id="22">
+                <div id="bookImg" class="col-xs-12 col-sm-3 col-md-3 item">
+                <img src="<%=url%>/img/<%=book.img%>" alt="Responsive image" class="img-responsive">
+                    
+                    <hr>
+                </div>
+                <div class="col-xs-12 col-sm-9 col-md-9 col-lg-9 info">
+                    <div class="bookInfo col-md-12">
+                        <div id="title" class="titleBook"><%= book.name %></div>
+                    </div>
+                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                        <div class="bookLastInfo">
+                            <div class="bookRow"><span class="properties">автор:</span><span id="author"><%= book.author %></span></div>
+                            <div class="bookRow"><span class="properties">год:</span><span id="year"><%= book.year %></span></div>
+                            <div class="bookRow"><span class="properties">страниц:</span><span id="pages"><%= book.numberPages %></span></div>
+                            <div class="bookRow"><span class="properties">isbn:</span><span id="isbn"></span></div>
+                        </div>
+                    </div>
+                    <div class="btnBlock col-xs-12 col-sm-12 col-md-12">
+                        <button onclick="read()" type="button" style="width:150px" class="btnBookID btn-lg btn btn-success">Хочу читать!</button>
+                    </div>
+                    <div class="bookDescription col-xs-12 col-sm-12 col-md-12 hidden-xs hidden-sm">
+                        <h4>О книге</h4>
+                        <hr>
+                        <p id="description"><%= book.info %></p>
+                    </div>
+                </div>
+                <div class="bookDescription col-xs-12 col-sm-12 col-md-12 hidden-md hidden-lg">
+                    <h4>О книге</h4>
+                    <hr>
+                    <p class="description"><%= book.info %></p>
+                </div>
+            </div>
+            <script src="./book-page_files/book.js" defer=""></script>
+            <script>
+                function read(){
+                    const id = "<%=book.id%>";
+                    fetch("<%=url%>/api/v1/viewread",{
+                        method: "POST",
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({id})
+                    }).then(res=>res.json()).then(res=>{
+                        if(res.result == "ok"){
+                            fetch("<%=url%>/api/v1/getviewcount", {
+                            method: "POST",
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({id})
+                            }).then(res=>res.json()).then(res=>{
+                                if(res.clickBook && res.clickRead){
+                                    alert(`Книга есть в наличии. Звоните по номеру +380000000000\nСтраницу посетило: ${res.clickBook} пользователей\nКнигу захотело прочитать: ${res.clickRead} пользователей`);
+                                } else if (res.error){
+                                    alert(res.error);
+                                    window.location.href = '';
+                                }
+                            }).catch(()=>{
+                                window.location.href = '';
+                            });
+                        } else if (res.error){
+                            alert(res.error);
+                        }
+                    }).catch(()=>{
+                                window.location.href = '';
+                    });
+                };
+            </script>
+        </div>
+    </div>
+</section>

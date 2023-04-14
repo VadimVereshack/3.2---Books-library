@@ -1,0 +1,52 @@
+<section id="main" class="main-wrapper">
+    <div class="container">
+        <div id="content" class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+           
+            <% 
+            if(books.length){
+                books.forEach(({id, img, name, author}) => {%>
+                    <div data-book-id="<%= id %>" class="book_item col-xs-6 col-sm-3 col-md-2 col-lg-2">
+                        <div class="book">
+                            <a href="<%=url%>/api/v1/book/<%=id%>"><img src="<%=url%>/img/<%=img%>" alt="<%= name %>">
+                                <div data-title="<%= name %>" class="blockI" style="height: 46px;">
+                                    <div data-book-title="<$= name $>" class="title size_text"><%= name %></div>
+                                    <div data-book-author="<%= author %>" class="author"><%= author %></div>
+                                </div>
+                            </a>
+                            <a href="<%=url%>/api/v1/book/<%=id%>">
+                                <button type="button" class="btn-success">Подробнее</button>
+                            </a>
+                        </div>
+                    </div>
+               <%});
+            }%>
+        </div>
+    </div>
+
+<center>
+<div id="bottom" style="width: 80%; height: 1px; background-color: rgba(0, 0, 0, 0.2); margin-top: 40px; margin-bottom: 20px;"> </div>
+<% 
+let search = "";
+if(keyWord != null){
+    search = `search/${keyWord}/`
+}
+const n_NumberBooksReceived = Number(numberBooksReceived);
+const n_NumberBooks = Number(numberBooks);
+
+if(n_NumberBooksReceived>numberVievBooks) {
+    const futureLength = n_NumberBooksReceived-plusNumberVievBooks;
+    %>
+    <a href="<%=url%>/api/v1/<%= search %><%= futureLength %>/#bottom">
+        <button style="width: 150px; height: 25px;", class="btn-success">Назад</button>
+    </a>
+<%}%>
+<% if(n_NumberBooks > numberVievBooks && n_NumberBooks != n_NumberBooksReceived) {
+    const futureLength = (n_NumberBooks - n_NumberBooksReceived) >= plusNumberVievBooks ? n_NumberBooksReceived+plusNumberVievBooks : n_NumberBooksReceived + n_NumberBooks - n_NumberBooksReceived;
+    %>
+    <a href="<%=url%>/api/v1/<%= search %><%= futureLength %>/#bottom">
+        <button style="width: 150px; height: 25px;"class="btn-success">Вперед</button>
+    </a>
+<%}%>
+</center>
+
+</section>

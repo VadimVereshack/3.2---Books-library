@@ -1,0 +1,26 @@
+    <style>
+    #logout_btn{
+    margin-top: 20px;
+    background-color: #27ae60;
+    color: white;
+    width: 200px;
+    border: 1px solid black;
+    }
+
+    #logout_btn:hover{
+    background-color: #229752;
+    }
+    </style>
+
+    <center>
+        <button id="logout_btn" onclick="logout()">Выйти с админки</button>
+    </center>
+
+    <script>
+        function logout(){
+            window.location.replace('<%url%>/api/v<%=apiVersion%>');
+            fetch('<%url%>/admin/api/v<%=apiVersion%>', {
+                type: "GET",
+                headers: { "Authorization": "Basic" } });
+        }
+    </script>

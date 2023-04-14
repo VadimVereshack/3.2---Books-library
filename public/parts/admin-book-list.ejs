@@ -1,0 +1,128 @@
+<style>
+    .bookInfo{
+        margin-top: 10px;
+        width: 100%;
+        height: 110px;
+    
+    }
+
+    .elemenBooksInfo{
+        font-size: 12px;
+        display: inline-block;
+        width: 100px;
+        height: 20px;
+        border: 1px solid #0000004f;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+    
+    .elemenBooksInfo span{
+        font-weight: bold;
+        color: #27ae60;
+    }
+
+</style>
+
+
+<div style="width: 700px; min-height: 50px; border: 2px solid #27ae60; margin-top: 10px;" class="container">
+            <center>Список книг</center>
+            <%if(books){
+            books.forEach(({id,name,img,year,author,numberPages,info,clickBook,clickRead})=>{%>
+                <div class="bookInfo">
+                    <div class="elemenBooksInfo">
+                        ИД: <span><%=id%></span>
+                    </div>
+                    <div style="width: 150px;" class="elemenBooksInfo">
+                        Имя: <span><%=name%></span>
+                    </div>
+                    <div style="width: 300px;" class="elemenBooksInfo">
+                        Название картинки: <span><%=img%></span>
+                    </div>
+                    <div class="elemenBooksInfo">
+                        Год: <span><%=year%></span>
+                    </div>
+                    <div class="elemenBooksInfo">
+                        Автор: <span><%=author%></span>
+                    </div>
+                    <div style="width: 150px;" class="elemenBooksInfo">
+                        Количество страниц: <span><%=numberPages%></span>
+                    </div>
+                    <div style="width: 200px;" class="elemenBooksInfo">
+                        Нажатия на книгу: <span><%=clickBook%></span>
+                    </div>
+                    <div style="width: 200px;" class="elemenBooksInfo">
+                        Нажатия на кнопку "читать": <span><%=clickRead%></span>
+                    </div>
+                    <div style="width: 662px;" class="elemenBooksInfo">
+                        Описание: <span><%=info%></span>
+                    </div>
+                    <button style="font-size: 11px;float: right;margin-right: 15px; width: 50px; height:22px;" class="btn-success dellbookbtn" value="<%=id%>">Удалить</button>
+                   </div>
+                   <center><div style="width: 100%; height: 1px; background-color: #27ae5f79;margin-top: 10px;margin-bottom: 10px;"> </div></center>
+            <%})}%>
+            <center><%
+                let search = ''
+                if(keyWord){
+                    search = `search/${keyWord}/`;
+                }
+                if(numberPage && maxPage){
+                const maxVievPage = maxPage>5 ? 5 : maxPage;
+                if(numberPage != 1){%>
+                    <a href="<%=url%>/admin/api/v1<%=search%>/1" title="Первая страница"><<</a> <a href="<%=url%>/admin/api/v1/<%=search%><%=numberPage-1%>">Назад</a>
+                <%}
+                if(numberPage==1){
+                    addNumberPage(numberPage, 0, maxVievPage);  
+                } else if(numberPage==2){
+                    addNumberPage(numberPage, -1, maxVievPage-1);
+                } else if(maxPage<=maxVievPage){
+                    addNumberPage(numberPage, 1+numberPage*-1, maxVievPage-numberPage+1);
+                } else if(numberPage>2 && maxPage-2>=numberPage){
+                    addNumberPage(numberPage, -2, maxVievPage-2);
+                } else if(numberPage>2 && maxPage-1==numberPage){
+                    addNumberPage(numberPage, -3, maxVievPage-3);
+                } else if(numberPage>2 && maxPage==numberPage){
+                    addNumberPage(numberPage, -4, maxVievPage-4);
+                }
+
+                if(numberPage != maxPage){%>
+                    <a href="<%=url%>/admin/api/v1/<%=search%><%=numberPage+1%>">Вперёд</a> <a href="<%=url%>/admin/api/v1/<%=search%><%=maxPage%>" title="Последняя страница">>></a>
+                <%}%>
+                <br><span>Страница <%=numberPage%> из <%=maxPage%></span>
+                <%function addNumberPage(numberPage, start, finish){
+                    for(let i = start; i < finish; i++){
+                        if( numberPage + i == numberPage){%> 
+                            <span style="background-color: #27ae60; color: white;"><%=numberPage + i%></span>
+                        <%} else {%>
+                            <a href="<%=url%>/admin/api/v1/<%=search%><%=numberPage + i%>"><%=numberPage + i%></a>
+                        <%}
+                    }             
+                }
+            }%></center>
+</div>
+
+<script>
+    const btn = document.querySelectorAll(".dellbookbtn")
+    btn.forEach(element=>{
+        element.addEventListener(`click`, function(){
+            const request = fetch("<%=url%>/admin/api/v<%=apiVersion%>/dellbook",{
+            method: "POST",
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({id: this.value})
+        }).then(res=> res.json()).then(res=>{
+            if(res.result == "ok"){
+                window.location.href = ``;
+            } else if (res.error){
+                alert(res.error);
+            }
+        });
+    });
+    });
+
+    const elements = document.querySelectorAll(".elemenBooksInfo")
+    elements.forEach(element=>{
+        element.addEventListener(`mouseenter`, function(){
+            this.title = this.innerText
+        });
+    });
+  </script>
